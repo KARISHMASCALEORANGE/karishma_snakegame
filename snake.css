@@ -3,15 +3,69 @@ body {
     flex-direction: column;
     align-items: center;
     font-family: Arial, sans-serif;
-    background-color:cadetblue
+    background-color: cadetblue;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    justify-content: center;
 }
 
 canvas {
     border: 1px solid black;
-    background-color:aliceblue;
-    margin:10px
+    background-color: aliceblue;
+    margin: 10px;
+    width: 90vw;
+    max-width: 400px;
+    height: 90vw;
+    max-height: 400px;
 }
 
 h1, p {
     text-align: center;
+    margin: 0;
+    padding: 10px;
+}
+.hidden {
+    display: none;
+}
+
+#gameOver {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 2px solid black;
+    padding: 20px;
+    text-align: center;
+    z-index: 1000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+#gameOver p {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+#gameOver button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#gameOver button:hover {
+    background-color: #45a049;
+}
+
+
+/* Responsive styling */
+@media (min-width: 600px) {
+    canvas {
+        width: 400px;
+        height: 400px;
+    }
 }
