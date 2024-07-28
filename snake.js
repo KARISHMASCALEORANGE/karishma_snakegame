@@ -30,7 +30,7 @@ function update() {
     }
 
     if (head.x < 0 || head.x >= canvasSize || head.y < 0 || head.y >= canvasSize || collision()) {
-        resetGame();
+        endGame();
     }
 }
 
@@ -56,6 +56,11 @@ function collision() {
         }
     }
     return false;
+}
+
+function endGame() {
+    alert(`Game Over! Your score is ${score}`);
+    resetGame();
 }
 
 function resetGame() {
