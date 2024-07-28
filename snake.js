@@ -1,6 +1,8 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreElement = document.getElementById('score');
+const gameOverElement = document.getElementById('gameOver');
+const finalScoreElement = document.getElementById('finalScore');
 
 const gridSize = 20;
 const canvasSize = 400;
@@ -11,6 +13,7 @@ let snake = [
 let direction = { x: gridSize, y: 0 };
 let food = getRandomFoodPosition();
 let score = 0;
+let gameInterval;
 
 function gameLoop() {
     update();
@@ -30,7 +33,7 @@ function update() {
     }
 
     if (head.x < 0 || head.x >= canvasSize || head.y < 0 || head.y >= canvasSize || collision()) {
-        resetGame();
+        endGame();
     }
 }
 
@@ -58,12 +61,20 @@ function collision() {
     return false;
 }
 
-function resetGame() {
+function endGame() {
+    clearInterval(gameInterval);
+    finalScoreElement.textContent = score;
+    gameOverElement.classList.remove('hidden');
+}
+
+function startGame() {
+    gameOverElement.classList.add('hidden');
     snake = [{ x: gridSize * 5, y: gridSize * 5 }];
     direction = { x: gridSize, y: 0 };
     food = getRandomFoodPosition();
     score = 0;
     scoreElement.textContent = score;
+    gameInterval = setInterval(gameLoop, 150);
 }
 
 window.addEventListener('keydown', e => {
@@ -91,4 +102,4 @@ window.addEventListener('keydown', e => {
     }
 });
 
-setInterval(gameLoop, 150);
+startGame();
