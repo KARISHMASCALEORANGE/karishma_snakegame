@@ -8,10 +8,13 @@
 </head>
 <body>
     <h1>EAT & GROW</h1>
-    <p style="font-family:Arial, Helvetica, sans-serif;">Use arrow keys to control the snake.Eat the food to grow and increase your score !</p>
+    <p style="font-family: Arial, Helvetica, sans-serif;">Use arrow keys to control the snake. Eat the food to grow and increase your score!</p>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
     <p style="font-weight: bolder;">SCORE: <span id="score">0</span></p>
+    <div id="gameOver" class="hidden">
+        <p>Game Over! Your score is <span id="finalScore"></span></p>
+        <button onclick="startGame()">Try Again</button>
+    </div>
     <script src="snake.js"></script>
 </body>
 </html>
-
