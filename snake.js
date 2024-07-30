@@ -126,25 +126,26 @@ window.addEventListener('keydown', e => {
 });
 
 // Touch controls
-function handleTouch(event) {
+function Touch(event) {
     event.preventDefault();
     const touch = event.touches[0];
-    const x = touch.clientX - canvas.getBoundingClientRect().left;
-    const y = touch.clientY - canvas.getBoundingClientRect().top;
+    //get the position of an element relative to the viewport
+    const x = touch.cX - canvas.getBoundingClientRect().left;
+    const y = touch.cY - canvas.getBoundingClientRect().top;
 
-    if (x < canvas.width / 3) {
+    if (x < canvas.width / 4) {
         if (direction.x !== gridSize) {
             direction = { x: -gridSize, y: 0 };
         }
-    } else if (x > canvas.width * 2 / 3) {
+    } else if (x > canvas.width * 3/4) {
         if (direction.x !== -gridSize) {
             direction = { x: gridSize, y: 0 };
         }
-    } else if (y < canvas.height / 3) {
+    } else if (y < canvas.height / 4) {
         if (direction.y !== gridSize) {
             direction = { x: 0, y: -gridSize };
         }
-    } else if (y > canvas.height * 2 / 3) {
+    } else if (y > canvas.height * 3/4) {
         if (direction.y !== -gridSize) {
             direction = { x: 0, y: gridSize };
         }
@@ -156,8 +157,8 @@ function handleTouch(event) {
 }
 
 // Attach touch event listeners to canvas
-canvas.addEventListener('touchstart', handleTouch);
-canvas.addEventListener('touchmove', handleTouch);
+canvas.addEventListener('touchstart', Touch);
+canvas.addEventListener('touchmove', Touch);
 
 // Start the game initially
 startGame();
