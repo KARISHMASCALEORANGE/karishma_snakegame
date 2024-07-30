@@ -7,13 +7,13 @@ const finalScoreElement = document.getElementById('finalScore');
 const gridSize = 20;
 const canvasSize = 400;
 
-let snake = [
-    { x: gridSize * 5, y: gridSize * 5 }
-];
-let direction = { x: gridSize, y: 0 };
+let snake = [getrandompos()];
+let direction = getrandomdir();
 let food = getRandomFoodPosition();
 let score = 0;
 let gameInterval;
+let touchStartX, touchStartY;
+let gameStarted = false; // Flag to check if the game has started
 
 function gameLoop() {
     update();
@@ -37,6 +37,15 @@ function update() {
     }
 }
 
+function collision() {
+    for (let i = 1; i < snake.length; i++) {
+        if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'green';
@@ -52,13 +61,11 @@ function getRandomFoodPosition() {
     };
 }
 
-function collision() {
-    for (let i = 1; i < snake.length; i++) {
-        if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) {
-            return true;
-        }
-    }
-    return false;
+function getrandompos() {
+    return {
+        x: Math.floor(Math.random() * (canvasSize / gridSize)) * gridSize,
+        y: Math.floor(Math.random() * (canvasSize / gridSize)) * gridSize
+    };
 }
 
 function endGame() {
@@ -67,16 +74,28 @@ function endGame() {
     gameOverElement.classList.remove('hidden');
 }
 
+function getrandomdir() {
+    const directions = [
+        { x: gridSize, y: 0 },    // Right
+        { x: -gridSize, y: 0 },   // Left
+        { x: 0, y: gridSize },    // Down
+        { x: 0, y: -gridSize }    // Up
+    ];
+    return directions[Math.floor(Math.random() * directions.length)];
+}
+
 function startGame() {
     gameOverElement.classList.add('hidden');
-    snake = [{ x: gridSize * 5, y: gridSize * 5 }];
-    direction = { x: gridSize, y: 0 };
+    snake = [getrandompos()];
+    direction = getrandomdir();
     food = getRandomFoodPosition();
     score = 0;
     scoreElement.textContent = score;
     gameInterval = setInterval(gameLoop, 150);
+    gameStarted = true;
 }
 
+// Keyboard controls
 window.addEventListener('keydown', e => {
     switch (e.key) {
         case 'ArrowUp':
@@ -101,5 +120,55 @@ window.addEventListener('keydown', e => {
             break;
     }
 });
+
+// Touch controls
+function handleTouchStart(event) {
+    event.preventDefault();
+    const touch = event.touches[0];
+    touchStartX = touch.clientX - canvas.getBoundingClientRect().left;
+    touchStartY = touch.clientY - canvas.getBoundingClientRect().top;
+}
+
+function handleTouchMove(event) {
+    event.preventDefault();
+    const touch = event.touches[0];
+    const x = touch.clientX - canvas.getBoundingClientRect().left;
+    const y = touch.clientY - canvas.getBoundingClientRect().top;
+
+    const dx = x - touchStartX;
+    const dy = y - touchStartY;
+
+    if (Math.abs(dx) > Math.abs(dy)) {
+        // Horizontal swipe
+        if (dx < 0) {
+            if (direction.x !== gridSize) {
+                direction = { x: -gridSize, y: 0 };
+            }
+        } else {
+            if (direction.x !== -gridSize) {
+                direction = { x: gridSize, y: 0 };
+            }
+        }
+    } else {
+        // Vertical swipe
+        if (dy < 0) {
+            if (direction.y !== gridSize) {
+                direction = { x: 0, y: -gridSize };
+            }
+        } else {
+            if (direction.y !== -gridSize) {
+                direction = { x: 0, y: gridSize };
+            }
+        }
+    }
+
+    if (!gameStarted) {
+        startGame();
+    }
+}
+
+// Attach touch event listeners to canvas
+canvas.addEventListener('touchstart', handleTouchStart);
+canvas.addEventListener('touchmove', handleTouchMove);
 
 startGame();
