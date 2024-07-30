@@ -6,42 +6,34 @@ const finalScoreElement = document.getElementById('finalScore');
 
 const gridSize = 20;
 const canvasSize = 400;
-//positioning the snake's head 
-// let snake = [
-//     { x: gridSize * 5, y: gridSize * 5 }
-// ];
-let snake = [
-    getrandompos()
-];
-// let direction = { x: gridSize, y: 0 }; //moving to right
-let direction = getrandomdir();// moving down
 
+let snake = [getrandompos()];
+let direction = getrandomdir();
 let food = getRandomFoodPosition();
 let score = 0;
 let gameInterval;
+let isPaused = false;
+let gameStarted = false;
 
 function gameLoop() {
-
+    if (!isPaused) {
         update();
         draw();
-    
+    }
 }
+
 function update() {
-    //This represents the current position of the snake's head
-    //calculates the new x-coordinate of the snake's head after moving in the specified direction.
     const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
-    snake.unshift(head);  //The new head is added to the beginning of the snake array
+    snake.unshift(head);
 
     if (head.x === food.x && head.y === food.y) {
         score++;
         scoreElement.textContent = score;
         food = getRandomFoodPosition();
     } else {
-        snake.pop();  //removing from tail
+        snake.pop();
     }
 
-    //checks if it collides
-    //left - right - top - bottom
     if (head.x < 0 || head.x >= canvasSize || head.y < 0 || head.y >= canvasSize || collision()) {
         endGame();
     }
@@ -55,7 +47,6 @@ function collision() {
     }
     return false;
 }
-
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -79,44 +70,34 @@ function getrandompos() {
     };
 }
 
-
-
-
-
 function endGame() {
-    clearInterval(gameInterval);  //Stop the game loop.
+    clearInterval(gameInterval);
     finalScoreElement.textContent = score;
     gameOverElement.classList.remove('hidden');
 }
 
-
-
 function getrandomdir() {
     const directions = [
-        { x: gridSize, y: 0 },    // Right
-        { x: -gridSize, y: 0 },   // Left
-        { x: 0, y: gridSize },    // Down
-        { x: 0, y: -gridSize }    // Up
+        { x: gridSize, y: 0 },
+        { x: -gridSize, y: 0 },
+        { x: 0, y: gridSize },
+        { x: 0, y: -gridSize }
     ];
     return directions[Math.floor(Math.random() * directions.length)];
 }
 
-
-
 function startGame() {
-    gameOverElement.classList.add('hidden'); //you apply any styles associated with the .hidden class from your CSS.
-    //The array is initialized with a single object representing the initial position of the snake's head.
+    gameOverElement.classList.add('hidden');
     snake = [getrandompos()];
-    // direction = { x: 0, y: 0 }; 
     direction = getrandomdir();
     food = getRandomFoodPosition();
     score = 0;
     scoreElement.textContent = score;
     gameInterval = setInterval(gameLoop, 150);
+    gameStarted = true;
 }
 
 window.addEventListener('keydown', e => {
-    // Represents the key that was pressed
     switch (e.key) {
         case 'ArrowUp':
             if (direction.y === 0) {
@@ -140,19 +121,18 @@ window.addEventListener('keydown', e => {
             break;
     }
 });
-// Touch controls
+
 function Touch(event) {
     event.preventDefault();
     const touch = event.touches[0];
-    //get the position of an element relative to the viewport
-    const x = touch.cX - canvas.getBoundingClientRect().left;
-    const y = touch.cY - canvas.getBoundingClientRect().top;
+    const x = touch.clientX - canvas.getBoundingClientRect().left;
+    const y = touch.clientY - canvas.getBoundingClientRect().top;
 
     if (x < canvas.width / 3) {
         if (direction.x !== gridSize) {
             direction = { x: -gridSize, y: 0 };
         }
-    } else if (x > canvas.width * 2/3) {
+    } else if (x > canvas.width * 2 / 3) {
         if (direction.x !== -gridSize) {
             direction = { x: gridSize, y: 0 };
         }
@@ -160,7 +140,7 @@ function Touch(event) {
         if (direction.y !== gridSize) {
             direction = { x: 0, y: -gridSize };
         }
-    } else if (y > canvas.height * 2/3) {
+    } else if (y > canvas.height * 2 / 3) {
         if (direction.y !== -gridSize) {
             direction = { x: 0, y: gridSize };
         }
@@ -171,12 +151,7 @@ function Touch(event) {
     }
 }
 
-// Attach touch event listeners to canvas
 canvas.addEventListener('touchstart', Touch);
 canvas.addEventListener('touchmove', Touch);
 
-
 startGame();
-
-
-
