@@ -133,19 +133,19 @@ function Touch(event) {
     const x = touch.cX - canvas.getBoundingClientRect().left;
     const y = touch.cY - canvas.getBoundingClientRect().top;
 
-    if (x < canvas.width / 4) {
+    if (x < canvas.width / 3) {
         if (direction.x !== gridSize) {
             direction = { x: -gridSize, y: 0 };
         }
-    } else if (x > canvas.width * 3/4) {
+    } else if (x > canvas.width * 2/3) {
         if (direction.x !== -gridSize) {
             direction = { x: gridSize, y: 0 };
         }
-    } else if (y < canvas.height / 4) {
+    } else if (y < canvas.height / 3) {
         if (direction.y !== gridSize) {
             direction = { x: 0, y: -gridSize };
         }
-    } else if (y > canvas.height * 3/4) {
+    } else if (y > canvas.height * 2/3) {
         if (direction.y !== -gridSize) {
             direction = { x: 0, y: gridSize };
         }
