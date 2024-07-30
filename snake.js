@@ -21,10 +21,10 @@ let score = 0;
 let gameInterval;
 
 function gameLoop() {
-    if (!isPaused) {
+
         update();
         draw();
-    }
+    
 }
 function update() {
     //This represents the current position of the snake's head
