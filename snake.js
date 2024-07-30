@@ -141,31 +141,26 @@ window.addEventListener('keydown', e => {
     }
 });
 // Touch controls
-// Touch controls
 function Touch(event) {
     event.preventDefault();
     const touch = event.touches[0];
-    const x = touch.cx - canvas.getBoundingClientRect().left;
-    const y = touch.cy - canvas.getBoundingClientRect().top;
+    //get the position of an element relative to the viewport
+    const x = touch.cX - canvas.getBoundingClientRect().left;
+    const y = touch.cY - canvas.getBoundingClientRect().top;
 
-    const left = 100;   // 100 pixels from the left edge
-    const right = canvas.width - 100; // 100 pixels from the right edge
-    const top = 100;    // 100 pixels from the top edge
-    const bottom = canvas.height - 100; // 100 pixels from the bottom edge
-
-    if (x < left) {
+    if (x < canvas.width / 3) {
         if (direction.x !== gridSize) {
             direction = { x: -gridSize, y: 0 };
         }
-    } else if (x > right) {
+    } else if (x > canvas.width * 2/3) {
         if (direction.x !== -gridSize) {
             direction = { x: gridSize, y: 0 };
         }
-    } else if (y < top) {
+    } else if (y < canvas.height / 3) {
         if (direction.y !== gridSize) {
             direction = { x: 0, y: -gridSize };
         }
-    } else if (y > bottom) {
+    } else if (y > canvas.height * 2/3) {
         if (direction.y !== -gridSize) {
             direction = { x: 0, y: gridSize };
         }
@@ -180,4 +175,8 @@ function Touch(event) {
 canvas.addEventListener('touchstart', Touch);
 canvas.addEventListener('touchmove', Touch);
 
+
 startGame();
+
+
+
