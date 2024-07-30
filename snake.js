@@ -14,10 +14,13 @@ let score = 0;
 let gameInterval;
 let touchStartX, touchStartY;
 let gameStarted = false; // Flag to check if the game has started
+let isPaused = false; // Flag to check if the game is paused
 
 function gameLoop() {
-    update();
-    draw();
+    if (!isPaused) {
+        update();
+        draw();
+    }
 }
 
 function update() {
@@ -92,6 +95,7 @@ function startGame() {
     score = 0;
     scoreElement.textContent = score;
     gameInterval = setInterval(gameLoop, 150);
+    isPaused = false;
     gameStarted = true;
 }
 
@@ -122,43 +126,27 @@ window.addEventListener('keydown', e => {
 });
 
 // Touch controls
-function handleTouchStart(event) {
-    event.preventDefault();
-    const touch = event.touches[0];
-    touchStartX = touch.clientX - canvas.getBoundingClientRect().left;
-    touchStartY = touch.clientY - canvas.getBoundingClientRect().top;
-}
-
-function handleTouchMove(event) {
+function handleTouch(event) {
     event.preventDefault();
     const touch = event.touches[0];
     const x = touch.clientX - canvas.getBoundingClientRect().left;
     const y = touch.clientY - canvas.getBoundingClientRect().top;
 
-    const dx = x - touchStartX;
-    const dy = y - touchStartY;
-
-    if (Math.abs(dx) > Math.abs(dy)) {
-        // Horizontal swipe
-        if (dx < 0) {
-            if (direction.x !== gridSize) {
-                direction = { x: -gridSize, y: 0 };
-            }
-        } else {
-            if (direction.x !== -gridSize) {
-                direction = { x: gridSize, y: 0 };
-            }
+    if (x < canvas.width / 3) {
+        if (direction.x !== gridSize) {
+            direction = { x: -gridSize, y: 0 };
         }
-    } else {
-        // Vertical swipe
-        if (dy < 0) {
-            if (direction.y !== gridSize) {
-                direction = { x: 0, y: -gridSize };
-            }
-        } else {
-            if (direction.y !== -gridSize) {
-                direction = { x: 0, y: gridSize };
-            }
+    } else if (x > canvas.width * 2 / 3) {
+        if (direction.x !== -gridSize) {
+            direction = { x: gridSize, y: 0 };
+        }
+    } else if (y < canvas.height / 3) {
+        if (direction.y !== gridSize) {
+            direction = { x: 0, y: -gridSize };
+        }
+    } else if (y > canvas.height * 2 / 3) {
+        if (direction.y !== -gridSize) {
+            direction = { x: 0, y: gridSize };
         }
     }
 
@@ -168,7 +156,8 @@ function handleTouchMove(event) {
 }
 
 // Attach touch event listeners to canvas
-canvas.addEventListener('touchstart', handleTouchStart);
-canvas.addEventListener('touchmove', handleTouchMove);
+canvas.addEventListener('touchstart', handleTouch);
+canvas.addEventListener('touchmove', handleTouch);
 
+// Start the game initially
 startGame();
